@@ -1,0 +1,74 @@
+
+ // Input file name __InitialInput.dep,  Mon Jan 26 21:51:52 2026
+INPUT_PARAMETERS   { 
+SimulationName ATw16
+nSimulatedWorkersPerSector 16
+
+SimulateNYearsAfterCalibration 5
+SaveMonthsAfterCalibration 9999
+SaveMonthsFromMonth0 9999
+
+PlotProducerID   26
+PlotIndivID   26
+Autorun   0
+PlotsX0   0
+}
+
+COUNTRIES {
+matrix_eu-ic-io_ind-by-ind_24ed_2010.csv
+Units 1000000 euro
+
+Country AT
+DisaggExtSectCountries { }
+AggExtSectCountries {  }
+X0 0 Y0 0
+}
+
+PLOTS {
+=Column= 0
+ConsumHouseholds 0
+ConsumGov 0
+Exports 0
+Imports 0
+Supply-Demand 0
+
+=Column= 1
+Production 0
+GrossOutput 0
+LeftToSell 0
+Supply 0
+Demand 0
+
+=Column= 2
+Employment 0
+EmployeesPerSect 0
+ProducersPerSect 0
+ProducersAvgSize 0
+FirmsPerFirmsize 0
+
+=Column= 3
+IndivsValues 0
+ProdsValues 0
+IndivsWealth 2
+ProducersWealth 2
+EmplPerFirmsize 0
+
+=Column= 4
+GovValues 0
+MarketPrices 0
+Indices_and_% 0
+ConsumPXFactor 0
+FirmsBirth&Death 0
+
+=Column= 5
+WorkerID 0
+ProducerID 0
+CentralBank 0
+Bank_0 0
+AssistedProd 0
+
+=Column= 6
+}
+
+ Log begins:
+

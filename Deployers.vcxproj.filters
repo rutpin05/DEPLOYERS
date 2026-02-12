@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="source\pch.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source\GlgClass.cpp" />
+    <ClCompile Include="source\Goods.cpp" />
+    <ClCompile Include="source\Government.cpp" />
+    <ClCompile Include="source\Individual.cpp" />
+    <ClCompile Include="source\pch.cpp" />
+    <ClCompile Include="source\PlotsXY.cpp" />
+    <ClCompile Include="source\Producer.cpp" />
+    <ClCompile Include="source\ProductSpecs.cpp" />
+    <ClCompile Include="source\SAM.cpp" />
+    <ClCompile Include="source\World.cpp" />
+    <ClCompile Include="source\Agent.cpp" />
+    <ClCompile Include="source\Banks.cpp" />
+    <ClCompile Include="source\CData.cpp" />
+    <ClCompile Include="source\CFIGARO.cpp" />
+    <ClCompile Include="source\DEPLOYERS.cpp" />
+    <ClCompile Include="source\ExtSectors.cpp" />
+    <ClCompile Include="source\FinancialMarket.cpp" />
+  </ItemGroup>
+</Project>
