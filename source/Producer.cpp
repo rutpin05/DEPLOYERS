@@ -30,7 +30,7 @@ ofstream& operator<<(ofstream& ofstrm, const CProducerSpecs& producerSpecs)
 	ofstrm << tab1 << "}" << endl;
 
 	return ofstrm;
-};
+};  
 ifstream& operator>>(std::ifstream& infile, CProducerSpecs& producerSpecs)
 {
 	std::string productName, word, name, bracket;
