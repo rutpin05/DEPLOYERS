@@ -1461,9 +1461,12 @@ void CSAM::initializeSAMProperties(const CFigaro& FIGARO)
 
 	// Calculate the number of P_ producer types and total external sector accounts X_
 	_nPProducerTypes = FIGARO.getNsectors();
-	_nPXproducerTypes = _nPProducerTypes +
-		static_cast<int>(FIGARO._pDisaggExtSectCountries->size()) * FIGARO.getNsectors() +
-		static_cast<int>(FIGARO._pAggExtSectCountries->size());
+	if (getInputParameter("TradeDisaggMode") == 1)
+		_nPXproducerTypes = _nPProducerTypes + FIGARO.getNsectors(); // Sector mode: one X_ per sector
+	else
+		_nPXproducerTypes = _nPProducerTypes +
+			static_cast<int>(FIGARO._pDisaggExtSectCountries->size()) * FIGARO.getNsectors() +
+			static_cast<int>(FIGARO._pAggExtSectCountries->size());
 
 	_nAccounts = _nPXproducerTypes + 7; // 7: GFCF, L, K, Tproducts, Tproduction, Gov, HH; not explicitely included: NPISH, ChInv
 	_units = FIGARO._units; // units of the SAM, typically 1e6 euros
@@ -1570,11 +1573,14 @@ int CSAM::buildProducerAccounts(const CFigaro& FIGARO)
 		// Process intermediate consumption columns within the country
 		processIntermediateConsumption(account, FIGARO, SAMaccRowN, FIGsectorN);
 
-		// Process exports columns to disaggregated countries
-		processExportsToDisaggCountries(account, FIGARO, SAMaccRowN);
-
-		// Process exports columns to aggregated countries
-		processExportsToAggCountries(account, FIGARO, SAMaccRowN);
+		// Process exports columns to external sectors
+		if (getInputParameter("TradeDisaggMode") == 1)
+			processExportsToSectorExtSectors(account, FIGARO, SAMaccRowN);
+		else
+		{
+			processExportsToDisaggCountries(account, FIGARO, SAMaccRowN);
+			processExportsToAggCountries(account, FIGARO, SAMaccRowN);
+		}
 
 		// Process final consumption columns GFCF, Gov, HH
 		processFinalConsumption(account, FIGARO, FIGsectorN);
@@ -1587,11 +1593,17 @@ int CSAM::buildProducerAccounts(const CFigaro& FIGARO)
 
 int CSAM::buildExternalSectorAccounts(const CFigaro& FIGARO, int SAMaccRowN, const set<GoodType>& allMyCountriesTypes)
 {
-	// Build disaggregated external sector accounts
-	SAMaccRowN = buildDisaggregatedExtSectorAccounts(FIGARO, SAMaccRowN);
-
-	// Build aggregated external sector accounts
-	SAMaccRowN = buildAggregatedExtSectorAccounts(FIGARO, SAMaccRowN, allMyCountriesTypes);
+	if (getInputParameter("TradeDisaggMode") == 1)
+	{
+		// Sector mode: one X_ account per sector, aggregating all foreign countries
+		SAMaccRowN = buildSectorExtSectorAccounts(FIGARO, SAMaccRowN);
+	}
+	else
+	{
+		// Country mode (default): disaggregated + aggregated countries
+		SAMaccRowN = buildDisaggregatedExtSectorAccounts(FIGARO, SAMaccRowN);
+		SAMaccRowN = buildAggregatedExtSectorAccounts(FIGARO, SAMaccRowN, allMyCountriesTypes);
+	}
 
 	return SAMaccRowN;
 }
@@ -1784,6 +1796,192 @@ int CSAM::buildRestOfWorldAccount(const CFigaro& FIGARO, int SAMaccRowN, const s
 	}
 
 	return SAMaccRowN + 1;
+}
+
+// ===========================  build sector-based external sector accounts  ==========================================
+
+int CSAM::buildSectorExtSectorAccounts(const CFigaro& FIGARO, int SAMaccRowN)
+{
+	int firstSectorAccRowN = SAMaccRowN;
+
+	// Create one X_ account per sector, aggregating ALL foreign countries
+	for (int sectorN = 0; sectorN < FIGARO.getNsectors(); ++sectorN)
+	{
+		auto& account = *Accounts()[SAMaccRowN];
+		account._accN = SAMaccRowN;
+
+		string sectorCode = FIGARO._pSectorTypeToCode->at(sectorN);
+		account._label = "X_" + sectorCode;
+		account._accName = sectorCode;
+
+		registerAccountInMaps(account, SAMaccRowN);
+		addToAccountToGroup(&account, "X");
+
+		// Accumulate IC imports from ALL foreign countries for this sector
+		for (int foreignCountryN = 0; foreignCountryN < getWorld().getFigaro().getNcountries(); ++foreignCountryN)
+		{
+			if (foreignCountryN == FIGARO._thisCountryType)
+				continue;
+
+			for (int colThisCountrySectN = 0; colThisCountrySectN < FIGARO.getNsectors(); ++colThisCountrySectN)
+			{
+				auto value = (*FIGARO._pFigProducers).at(FIGARO._thisCountryType).at(colThisCountrySectN)
+					.getIC().at(foreignCountryN).at(sectorN);
+				account._rowQtties[colThisCountrySectN] += value;
+				(*pRowSum())[SAMaccRowN] += value;
+				(*pColSum())[colThisCountrySectN] += value;
+			}
+		}
+
+		++SAMaccRowN;
+	}
+
+	// Pre-create institutional accounts at positions after X_Sector accounts
+	// (same pattern as buildRestOfWorldAccount - these will be reused by
+	// buildGFCFAccount, buildValueAddedAccounts, buildInstitutionalAccounts)
+	int SAMrowN = SAMaccRowN;
+
+	auto& account1 = *Accounts()[SAMrowN];
+	account1._accN = SAMrowN;
+	account1._label = "F_GFCF";
+	account1._accName = "GFCF";
+	registerAccountInMaps(account1, SAMrowN);
+	addToAccountToGroup(&Account(SAMrowN), "F");
+
+	++SAMrowN;
+	auto& account2 = *Accounts()[SAMrowN];
+	account2._accN = SAMrowN;
+	account2._label = "L_CompEmployees";
+	account2._accName = "CompEmployees";
+	registerAccountInMaps(account2, SAMrowN);
+	addToAccountToGroup(&Account(SAMrowN), "L");
+
+	++SAMrowN;
+	auto& account3 = *Accounts()[SAMrowN];
+	account3._accN = SAMrowN;
+	account3._label = "K_GrossOpSurplus";
+	account3._accName = "GrossOpSurplus";
+	registerAccountInMaps(account3, SAMrowN);
+	addToAccountToGroup(&Account(SAMrowN), "K");
+
+	++SAMrowN;
+	auto& account4 = *Accounts()[SAMrowN];
+	account4._accN = SAMrowN;
+	account4._label = "T_TaxProduction";
+	account4._accName = "TaxProduction";
+	registerAccountInMaps(account4, SAMrowN);
+	addToAccountToGroup(&Account(SAMrowN), "T");
+
+	++SAMrowN;
+	auto& account5 = *Accounts()[SAMrowN];
+	account5._accN = SAMrowN;
+	account5._label = "T_TaxProducts";
+	account5._accName = "TaxProducts";
+	registerAccountInMaps(account5, SAMrowN);
+	addToAccountToGroup(&Account(SAMrowN), "T");
+
+	++SAMrowN;
+	auto& account6 = *Accounts()[SAMrowN];
+	account6._accN = SAMrowN;
+	account6._label = "G_Government";
+	account6._accName = "Government";
+	registerAccountInMaps(account6, SAMrowN);
+	addToAccountToGroup(&Account(SAMrowN), "G");
+
+	++SAMrowN;
+	auto& account7 = *Accounts()[SAMrowN];
+	account7._accN = SAMrowN;
+	account7._label = "H_Households";
+	account7._accName = "Households";
+	registerAccountInMaps(account7, SAMrowN);
+	addToAccountToGroup(&Account(SAMrowN), "H");
+
+	// Now populate final demand imports by sector
+	for (int sectorN = 0; sectorN < FIGARO.getNsectors(); ++sectorN)
+	{
+		string sectorCode = FIGARO._pSectorTypeToCode->at(sectorN);
+		string xLabel = "X_" + sectorCode;
+
+		for (int foreignCountryN = 0; foreignCountryN < getWorld().getFigaro().getNcountries(); ++foreignCountryN)
+		{
+			if (foreignCountryN == FIGARO._thisCountryType)
+				continue;
+
+			// Government imports of this sector
+			auto value = FIGARO.getFC_Government().at(FIGARO._thisCountryType).at(foreignCountryN).at(sectorN);
+			setRowCol(xLabel, "G_Government") += value;
+			(*pRowSum())[firstSectorAccRowN + sectorN] += value;
+
+			// Households + NPISH imports of this sector
+			value = FIGARO.getFC_Households().at(FIGARO._thisCountryType).at(foreignCountryN).at(sectorN)
+				+ FIGARO.getFC_NPISH().at(FIGARO._thisCountryType).at(foreignCountryN).at(sectorN);
+			setRowCol(xLabel, "H_Households") += value;
+			(*pRowSum())[firstSectorAccRowN + sectorN] += value;
+
+			// GFCF + ChgInvent imports of this sector
+			value = FIGARO.getFC_GFCF().at(FIGARO._thisCountryType).at(foreignCountryN).at(sectorN)
+				+ FIGARO.getFC_ChgInvent().at(FIGARO._thisCountryType).at(foreignCountryN).at(sectorN);
+			if (value < 0)
+				value = 0;
+			setRowCol(xLabel, "F_GFCF") += value;
+			(*pRowSum())[firstSectorAccRowN + sectorN] += value;
+		}
+	}
+
+	return SAMaccRowN; // Position after last X_Sector account
+}
+
+void CSAM::processExportsToSectorExtSectors(CAccount& account, const CFigaro& FIGARO, int SAMaccRowN)
+{
+	int colN = FIGARO.getNsectors(); // Start after domestic sector columns
+
+	// First pass: calculate IC exports per foreign sector
+	vector<double> icPerSector(FIGARO.getNsectors(), 0.);
+	double totalFinalDemand = 0.;
+	double totalIC = 0.;
+
+	for (int sectorN = 0; sectorN < FIGARO.getNsectors(); ++sectorN)
+	{
+		for (int foreignCountryN = 1; foreignCountryN <= getWorld().getFigaro().getNcountries(); ++foreignCountryN)
+		{
+			if (foreignCountryN == FIGARO._thisCountryType)
+				continue;
+
+			icPerSector[sectorN] += FIGARO.getFigProducers().at(foreignCountryN).at(sectorN)
+				.getIC().at(FIGARO._thisCountryType).at(SAMaccRowN);
+		}
+		totalIC += icPerSector[sectorN];
+	}
+
+	// Calculate total final demand exports (not sector-attributable)
+	for (int foreignCountryN = 1; foreignCountryN <= getWorld().getFigaro().getNcountries(); ++foreignCountryN)
+	{
+		if (foreignCountryN == FIGARO._thisCountryType)
+			continue;
+
+		totalFinalDemand += FIGARO.getFC_Government().at(foreignCountryN).at(FIGARO._thisCountryType).at(SAMaccRowN);
+		totalFinalDemand += FIGARO.getFC_Households().at(foreignCountryN).at(FIGARO._thisCountryType).at(SAMaccRowN);
+		totalFinalDemand += FIGARO.getFC_NPISH().at(foreignCountryN).at(FIGARO._thisCountryType).at(SAMaccRowN);
+		totalFinalDemand += FIGARO.getFC_GFCF().at(foreignCountryN).at(FIGARO._thisCountryType).at(SAMaccRowN);
+
+		double chgInvent = FIGARO.getFC_ChgInvent().at(foreignCountryN).at(FIGARO._thisCountryType).at(SAMaccRowN);
+		if (chgInvent >= 0)
+			totalFinalDemand += chgInvent;
+	}
+
+	// Second pass: fill X_Sector columns (IC + proportional final demand)
+	for (int sectorN = 0; sectorN < FIGARO.getNsectors(); ++sectorN)
+	{
+		account._rowQtties[colN] = icPerSector[sectorN];
+
+		// Distribute final demand exports proportionally to IC share per sector
+		if (totalIC > 0)
+			account._rowQtties[colN] += totalFinalDemand * icPerSector[sectorN] / totalIC;
+		else if (FIGARO.getNsectors() > 0)
+			account._rowQtties[colN] += totalFinalDemand / FIGARO.getNsectors();
+
+		++colN;
+	}
 }
 
 // ===========================  build GFCF account  ==========================================

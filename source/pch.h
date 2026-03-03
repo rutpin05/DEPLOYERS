@@ -2238,6 +2238,8 @@ public:
 	int buildAggregatedExtSectorAccounts(const CFigaro& FIGARO, int SAMaccRowN, const set<GoodType>& allMyCountriesTypes);
 	int buildRegularAggExtSectorAccount(const CFigaro& FIGARO, int SAMaccRowN, const string& aggExtCountryCode, GoodType extCountryN);
 	int buildRestOfWorldAccount(const CFigaro& FIGARO, int SAMaccRowN, const string& aggExtCountryCode, const set<GoodType>& allMyCountriesTypes);
+	int buildSectorExtSectorAccounts(const CFigaro& FIGARO, int SAMaccRowN);
+	void processExportsToSectorExtSectors(CAccount& account, const CFigaro& FIGARO, int SAMaccRowN);
 	int buildGFCFAccount(const CFigaro& FIGARO, int SAMaccRowN);
 	int buildValueAddedAccounts(const CFigaro& FIGARO, int SAMaccRowN);
 	int buildInstitutionalAccounts(int SAMaccRowN);
@@ -2764,6 +2766,7 @@ public:
 	void waitMyExternalCountriesToReadMyIO() const;
 	void waitMyExternalCountriesToWriteTheirIO() const;
 	void readMyExternalSectorsIO() const;
+	void readMyExternalSectorsIO_v2() const; // improved parser supporting disaggregated external sectors
 
 	friend long ::currMonth();
 	friend ifstream& operator>>(ifstream& ifstrm, CWorld& world);

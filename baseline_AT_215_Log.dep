@@ -1,7 +1,7 @@
 
- // Input file name __InitialInput.dep,  Thu Feb 26 11:50:05 2026
-INPUT_PARAMETERS   { 
-SimulationName ATw16
+ // Input file name baseline_test.dep,  Tue Feb 24 13:44:21 2026
+INPUT_PARAMETERS   {
+SimulationName baseline
 nSimulatedWorkersPerSector 16
 
 SimulateNYearsAfterCalibration 5
@@ -10,8 +10,9 @@ SaveMonthsFromMonth0 9999
 
 PlotProducerID   26
 PlotIndivID   26
-Autorun   0
+Autorun   1
 PlotsX0   0
+TradeDisaggMode 0
 }
 
 COUNTRIES {
@@ -76,14 +77,14 @@ AssistedProd 0
 
 ================================================================================
 [MILESTONE] Month 0: SIMULATION INITIALIZATION
-  - Stage: Initialization  - Timestamp: Thu Feb 26 11:50:16 2026
+  - Stage: Initialization  - Timestamp: Tue Feb 24 13:44:25 2026
   - SAM initialized, agents created
   - StartCalibrationAt: 24
   - FinishCalibrationAt (dynamic): 240
   - AssistedProductionUpto (dynamic): 240
 ================================================================================
 
-Thu Feb 26 11:50:16 2026
+Tue Feb 24 13:44:26 2026
 
 ------------------  Input SAM  ------------------
 
@@ -161,7 +162,7 @@ T_TaxProducts           64135000      19870000        973000      23304000      
 G_Government                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   35758307868    4548796999   32276454000                               72583558867  G_Government      
 H_Households                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    138887419000   84457701131                                                          223345120131  H_Households      
 ColSum                6395995998    2242571999      41955000    2288232999   17067068999    2982011998    7367185000    5926226000    2939409000    4889898997   12315037000    3605205999    5289443000    6190896000   13154296999   11832135999    4833996998    9788597999   16748752999   11632423999    2333435000    7107509000    5116835999   28701859999     740348000    5658729998   43650434998    7705116998   30368723998   20149529999   14738816999     112179000    3196240999    9382723998    2486940999   20397608999    2669521999    2158835000    6782173998    7590949000   14850226999    5974446998    2744569997   35967241999   12581176999    6937357000    1425529998    4338719998    1283683998    5735827000    2862469997    2141353000    6239238998   21965184000   18093371999   20468027998    5794241998    3417256998    1763085000    3527981999     344874000    2698949999     176710000             0  119741647000   66862079000  138887419000  120216008999    4548796999   32276454000   79561380462  208472296534
-                        P_AT_A01      P_AT_A02      P_AT_A03        P_AT_B   P_AT_C10T12   P_AT_C13T15      P_AT_C16      P_AT_C17      P_AT_C18      P_AT_C19      P_AT_C20      P_AT_C21      P_AT_C22      P_AT_C23      P_AT_C24      P_AT_C25      P_AT_C26      P_AT_C27      P_AT_C28      P_AT_C29      P_AT_C30   P_AT_C31_32      P_AT_C33      P_AT_D35      P_AT_E36   P_AT_E37T39        P_AT_F      P_AT_G45      P_AT_G46      P_AT_G47      P_AT_H49      P_AT_H50      P_AT_H51      P_AT_H52      P_AT_H53        P_AT_I      P_AT_J58   P_AT_J59_60      P_AT_J61   P_AT_J62_63      P_AT_K64      P_AT_K65      P_AT_K66        P_AT_L   P_AT_M69_70      P_AT_M71      P_AT_M72      P_AT_M73   P_AT_M74_75      P_AT_N77      P_AT_N78      P_AT_N79   P_AT_N80T82      P_AT_O84      P_AT_P85      P_AT_Q86   P_AT_Q87_88   P_AT_R90T92      P_AT_R93      P_AT_S94      P_AT_S95      P_AT_S96        P_AT_T        P_AT_U          X_RW        F_GFCF L_CompEmploye K_GrossOpSurp T_TaxProducti T_TaxProducts  G_Government  H_Households      RowSumError: Unable to open file ATw16_AT_SAM.csv for writing.
+                        P_AT_A01      P_AT_A02      P_AT_A03        P_AT_B   P_AT_C10T12   P_AT_C13T15      P_AT_C16      P_AT_C17      P_AT_C18      P_AT_C19      P_AT_C20      P_AT_C21      P_AT_C22      P_AT_C23      P_AT_C24      P_AT_C25      P_AT_C26      P_AT_C27      P_AT_C28      P_AT_C29      P_AT_C30   P_AT_C31_32      P_AT_C33      P_AT_D35      P_AT_E36   P_AT_E37T39        P_AT_F      P_AT_G45      P_AT_G46      P_AT_G47      P_AT_H49      P_AT_H50      P_AT_H51      P_AT_H52      P_AT_H53        P_AT_I      P_AT_J58   P_AT_J59_60      P_AT_J61   P_AT_J62_63      P_AT_K64      P_AT_K65      P_AT_K66        P_AT_L   P_AT_M69_70      P_AT_M71      P_AT_M72      P_AT_M73   P_AT_M74_75      P_AT_N77      P_AT_N78      P_AT_N79   P_AT_N80T82      P_AT_O84      P_AT_P85      P_AT_Q86   P_AT_Q87_88   P_AT_R90T92      P_AT_R93      P_AT_S94      P_AT_S95      P_AT_S96        P_AT_T        P_AT_U          X_RW        F_GFCF L_CompEmploye K_GrossOpSurp T_TaxProducti T_TaxProducts  G_Government  H_Households      RowSumSAM data saved to CSV file: baseline_AT_SAM.csv
 
 [CURVES] Month   0, Production=0.00, Unempl%=100.00, realGDP=0.00, CPI=100.00, size0-9%=100.0
 [CURVES] Month   1, Production=43.30, Unempl%=92.55, realGDP=0.00, CPI=100.00, size0-9%=100.0
@@ -190,7 +191,7 @@ ColSum                6395995998    2242571999      41955000    2288232999   170
 
 ================================================================================
 [MILESTONE] Month 24: PRE-CALIBRATION ENDS → ASSISTED CALIBRATION BEGINS
-  - Stage: AssistedCalibration  - Timestamp: Thu Feb 26 11:51:28 2026
+  - Stage: AssistedCalibration  - Timestamp: Tue Feb 24 13:44:52 2026
   - Producers now run in parallel (not sequentially by work day)
   - Salary adjustments enabled (market-driven)
   - GDP/CPI tracking begins
@@ -307,14 +308,14 @@ ColSum                6395995998    2242571999      41955000    2288232999   170
 
 --------------------------------------------------------------------------------
 [MILESTONE] Month 132: UNEMPLOYMENT CALIBRATION BEGINS
-  - Stage: AssistedCalibration  - Timestamp: Thu Feb 26 11:57:35 2026
+  - Stage: AssistedCalibration  - Timestamp: Tue Feb 24 13:47:02 2026
   - InitSalaryCalibFactor adjustments to match SAM unemployment target
 --------------------------------------------------------------------------------
 
 
 ================================================================================
 [MILESTONE] Month 132: ASSISTED PRODUCTION ENDS → TRANSITION BEGINS
-  - Stage: AssistedCalibration  - Timestamp: Thu Feb 26 11:57:35 2026
+  - Stage: AssistedCalibration  - Timestamp: Tue Feb 24 13:47:02 2026
   - Production subsidies end
   - ChangeFraction transitions from 0.1 to 0.0
   - Transition duration: 24 months
@@ -443,7 +444,7 @@ Year 0: 100.0%
 
 ================================================================================
 [MILESTONE] Month 156: CALIBRATION COMPLETE → FREE MARKET DYNAMICS
-  - Stage: TransitionCalibration  - Timestamp: Thu Feb 26 11:59:14 2026
+  - Stage: TransitionCalibration  - Timestamp: Tue Feb 24 13:47:34 2026
   - All SAM parameter adjustments cease
   - Full market-driven behavior
   - Snapshot saved with '_Calibrated' suffix
@@ -747,6 +748,3 @@ Year 0: 100.0%
 Year 0: 100.0%
 
 [CURVES] Month 215, Production=592.47, Unempl%=8.88, realGDP=350.32, CPI=113.28, size0-9%=90.7
-// Firm Death Age Distribution - Month 215 (5 deaths this month)
-// (% of dead firms that were N years old)
-Year 0: 100.0%

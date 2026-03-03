@@ -747,6 +747,3 @@ Year 0: 100.0%
 Year 0: 100.0%
 
 [CURVES] Month 215, Production=592.47, Unempl%=8.88, realGDP=350.32, CPI=113.28, size0-9%=90.7
-// Firm Death Age Distribution - Month 215 (5 deaths this month)
-// (% of dead firms that were N years old)
-Year 0: 100.0%

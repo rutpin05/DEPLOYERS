@@ -1,5 +1,5 @@
-INPUT_PARAMETERS   { 
-SimulationName ATw16_disagg
+INPUT_PARAMETERS   {
+SimulationName baseline
 nSimulatedWorkersPerSector 16
 
 SimulateNYearsAfterCalibration 5
@@ -8,10 +8,9 @@ SaveMonthsFromMonth0 9999
 
 PlotProducerID   26
 PlotIndivID   26
-Autorun   0
+Autorun   1
 PlotsX0   0
-
-TradeDisaggMode 1
+TradeDisaggMode 0
 }
 
 COUNTRIES {

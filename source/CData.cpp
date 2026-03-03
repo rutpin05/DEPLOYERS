@@ -1145,6 +1145,7 @@ void CData::initializeInputParameters()
 	mInputParameters()["ChangeFraction"] = 0.02;
 	mInputParameters()["HISTORY_LENGTH"] = 12;
 	mInputParameters()["ExportFraction"] = 0.20;
+	mInputParameters()["TradeDisaggMode"] = 0; // 0 = Country (default), 1 = Sector
 
 	mInputParameters()["MaxNeighboringWorkers"] = 250;
 	mInputParameters()["MaxNeighboringProducersPerSector"] = 3;

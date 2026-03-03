@@ -1,7 +1,7 @@
 
- // Input file name __InitialInput.dep,  Thu Feb 26 11:50:05 2026
-INPUT_PARAMETERS   { 
-SimulationName ATw16
+ // Input file name baseline_test.dep,  Tue Feb 24 13:44:21 2026
+INPUT_PARAMETERS   {
+SimulationName baseline
 nSimulatedWorkersPerSector 16
 
 SimulateNYearsAfterCalibration 5
@@ -10,8 +10,9 @@ SaveMonthsFromMonth0 9999
 
 PlotProducerID   26
 PlotIndivID   26
-Autorun   0
+Autorun   1
 PlotsX0   0
+TradeDisaggMode 0
 }
 
 COUNTRIES {
@@ -76,14 +77,14 @@ AssistedProd 0
 
 ================================================================================
 [MILESTONE] Month 0: SIMULATION INITIALIZATION
-  - Stage: Initialization  - Timestamp: Thu Feb 26 11:50:16 2026
+  - Stage: Initialization  - Timestamp: Tue Feb 24 13:44:25 2026
   - SAM initialized, agents created
   - StartCalibrationAt: 24
   - FinishCalibrationAt (dynamic): 240
   - AssistedProductionUpto (dynamic): 240
 ================================================================================
 
-Thu Feb 26 11:50:16 2026
+Tue Feb 24 13:44:26 2026
 
 ------------------  Input SAM  ------------------
 
@@ -161,7 +162,7 @@ T_TaxProducts           64135000      19870000        973000      23304000      
 G_Government                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   35758307868    4548796999   32276454000                               72583558867  G_Government      
 H_Households                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    138887419000   84457701131                                                          223345120131  H_Households      
 ColSum                6395995998    2242571999      41955000    2288232999   17067068999    2982011998    7367185000    5926226000    2939409000    4889898997   12315037000    3605205999    5289443000    6190896000   13154296999   11832135999    4833996998    9788597999   16748752999   11632423999    2333435000    7107509000    5116835999   28701859999     740348000    5658729998   43650434998    7705116998   30368723998   20149529999   14738816999     112179000    3196240999    9382723998    2486940999   20397608999    2669521999    2158835000    6782173998    7590949000   14850226999    5974446998    2744569997   35967241999   12581176999    6937357000    1425529998    4338719998    1283683998    5735827000    2862469997    2141353000    6239238998   21965184000   18093371999   20468027998    5794241998    3417256998    1763085000    3527981999     344874000    2698949999     176710000             0  119741647000   66862079000  138887419000  120216008999    4548796999   32276454000   79561380462  208472296534
-                        P_AT_A01      P_AT_A02      P_AT_A03        P_AT_B   P_AT_C10T12   P_AT_C13T15      P_AT_C16      P_AT_C17      P_AT_C18      P_AT_C19      P_AT_C20      P_AT_C21      P_AT_C22      P_AT_C23      P_AT_C24      P_AT_C25      P_AT_C26      P_AT_C27      P_AT_C28      P_AT_C29      P_AT_C30   P_AT_C31_32      P_AT_C33      P_AT_D35      P_AT_E36   P_AT_E37T39        P_AT_F      P_AT_G45      P_AT_G46      P_AT_G47      P_AT_H49      P_AT_H50      P_AT_H51      P_AT_H52      P_AT_H53        P_AT_I      P_AT_J58   P_AT_J59_60      P_AT_J61   P_AT_J62_63      P_AT_K64      P_AT_K65      P_AT_K66        P_AT_L   P_AT_M69_70      P_AT_M71      P_AT_M72      P_AT_M73   P_AT_M74_75      P_AT_N77      P_AT_N78      P_AT_N79   P_AT_N80T82      P_AT_O84      P_AT_P85      P_AT_Q86   P_AT_Q87_88   P_AT_R90T92      P_AT_R93      P_AT_S94      P_AT_S95      P_AT_S96        P_AT_T        P_AT_U          X_RW        F_GFCF L_CompEmploye K_GrossOpSurp T_TaxProducti T_TaxProducts  G_Government  H_Households      RowSumError: Unable to open file ATw16_AT_SAM.csv for writing.
+                        P_AT_A01      P_AT_A02      P_AT_A03        P_AT_B   P_AT_C10T12   P_AT_C13T15      P_AT_C16      P_AT_C17      P_AT_C18      P_AT_C19      P_AT_C20      P_AT_C21      P_AT_C22      P_AT_C23      P_AT_C24      P_AT_C25      P_AT_C26      P_AT_C27      P_AT_C28      P_AT_C29      P_AT_C30   P_AT_C31_32      P_AT_C33      P_AT_D35      P_AT_E36   P_AT_E37T39        P_AT_F      P_AT_G45      P_AT_G46      P_AT_G47      P_AT_H49      P_AT_H50      P_AT_H51      P_AT_H52      P_AT_H53        P_AT_I      P_AT_J58   P_AT_J59_60      P_AT_J61   P_AT_J62_63      P_AT_K64      P_AT_K65      P_AT_K66        P_AT_L   P_AT_M69_70      P_AT_M71      P_AT_M72      P_AT_M73   P_AT_M74_75      P_AT_N77      P_AT_N78      P_AT_N79   P_AT_N80T82      P_AT_O84      P_AT_P85      P_AT_Q86   P_AT_Q87_88   P_AT_R90T92      P_AT_R93      P_AT_S94      P_AT_S95      P_AT_S96        P_AT_T        P_AT_U          X_RW        F_GFCF L_CompEmploye K_GrossOpSurp T_TaxProducti T_TaxProducts  G_Government  H_Households      RowSumSAM data saved to CSV file: baseline_AT_SAM.csv
 
 [CURVES] Month   0, Production=0.00, Unempl%=100.00, realGDP=0.00, CPI=100.00, size0-9%=100.0
 [CURVES] Month   1, Production=43.30, Unempl%=92.55, realGDP=0.00, CPI=100.00, size0-9%=100.0
@@ -190,7 +191,7 @@ ColSum                6395995998    2242571999      41955000    2288232999   170
 
 ================================================================================
 [MILESTONE] Month 24: PRE-CALIBRATION ENDS → ASSISTED CALIBRATION BEGINS
-  - Stage: AssistedCalibration  - Timestamp: Thu Feb 26 11:51:28 2026
+  - Stage: AssistedCalibration  - Timestamp: Tue Feb 24 13:44:52 2026
   - Producers now run in parallel (not sequentially by work day)
   - Salary adjustments enabled (market-driven)
   - GDP/CPI tracking begins
@@ -307,14 +308,14 @@ ColSum                6395995998    2242571999      41955000    2288232999   170
 
 --------------------------------------------------------------------------------
 [MILESTONE] Month 132: UNEMPLOYMENT CALIBRATION BEGINS
-  - Stage: AssistedCalibration  - Timestamp: Thu Feb 26 11:57:35 2026
+  - Stage: AssistedCalibration  - Timestamp: Tue Feb 24 13:47:02 2026
   - InitSalaryCalibFactor adjustments to match SAM unemployment target
 --------------------------------------------------------------------------------
 
 
 ================================================================================
 [MILESTONE] Month 132: ASSISTED PRODUCTION ENDS → TRANSITION BEGINS
-  - Stage: AssistedCalibration  - Timestamp: Thu Feb 26 11:57:35 2026
+  - Stage: AssistedCalibration  - Timestamp: Tue Feb 24 13:47:02 2026
   - Production subsidies end
   - ChangeFraction transitions from 0.1 to 0.0
   - Transition duration: 24 months
@@ -443,310 +444,10 @@ Year 0: 100.0%
 
 ================================================================================
 [MILESTONE] Month 156: CALIBRATION COMPLETE → FREE MARKET DYNAMICS
-  - Stage: TransitionCalibration  - Timestamp: Thu Feb 26 11:59:14 2026
+  - Stage: TransitionCalibration  - Timestamp: Tue Feb 24 13:47:34 2026
   - All SAM parameter adjustments cease
   - Full market-driven behavior
   - Snapshot saved with '_Calibrated' suffix
 ================================================================================
 
 [CURVES] Month 156, Production=554.94, Unempl%=3.33, realGDP=300.74, CPI=107.09, size0-9%=91.4
-// Firm Death Age Distribution - Month 156 (8 deaths this month)
-// (% of dead firms that were N years old)
-Year 0: 100.0%
-
-[CURVES] Month 157, Production=523.57, Unempl%=8.91, realGDP=296.38, CPI=107.20, size0-9%=92.3
-// Firm Death Age Distribution - Month 157 (10 deaths this month)
-// (% of dead firms that were N years old)
-Year 0: 100.0%
-
-[CURVES] Month 158, Production=541.26, Unempl%=6.15, realGDP=295.44, CPI=107.27, size0-9%=92.2
-// Firm Death Age Distribution - Month 158 (6 deaths this month)
-// (% of dead firms that were N years old)
-Year 0: 100.0%
-
-[CURVES] Month 159, Production=578.65, Unempl%=0.50, realGDP=305.70, CPI=107.43, size0-9%=91.0
-// Firm Death Age Distribution - Month 159 (8 deaths this month)
-// (% of dead firms that were N years old)
-Year 0: 100.0%
-
-[CURVES] Month 160, Production=542.97, Unempl%=7.17, realGDP=303.12, CPI=107.48, size0-9%=90.9
-// Firm Death Age Distribution - Month 160 (7 deaths this month)
-// (% of dead firms that were N years old)
-Year 0: 100.0%
-
-[CURVES] Month 161, Production=572.11, Unempl%=1.30, realGDP=308.07, CPI=107.58, size0-9%=91.0
-// Firm Death Age Distribution - Month 161 (8 deaths this month)
-// (% of dead firms that were N years old)
-Year 0: 100.0%
-
-[CURVES] Month 162, Production=559.96, Unempl%=4.28, realGDP=309.11, CPI=107.60, size0-9%=90.6
-// Firm Death Age Distribution - Month 162 (7 deaths this month)
-// (% of dead firms that were N years old)
-Year 0: 100.0%
-
-[CURVES] Month 163, Production=584.66, Unempl%=0.90, realGDP=311.23, CPI=107.72, size0-9%=89.2
-// Firm Death Age Distribution - Month 163 (4 deaths this month)
-// (% of dead firms that were N years old)
-Year 0: 100.0%
-
-[CURVES] Month 164, Production=554.63, Unempl%=7.83, realGDP=313.52, CPI=107.73, size0-9%=91.4
-// Firm Death Age Distribution - Month 164 (7 deaths this month)
-// (% of dead firms that were N years old)
-Year 0: 100.0%
-
-[CURVES] Month 165, Production=568.14, Unempl%=3.64, realGDP=308.09, CPI=107.77, size0-9%=90.6
-// Firm Death Age Distribution - Month 165 (6 deaths this month)
-// (% of dead firms that were N years old)
-Year 0: 100.0%
-
-[CURVES] Month 166, Production=530.77, Unempl%=9.91, realGDP=312.99, CPI=107.84, size0-9%=91.9
-// Firm Death Age Distribution - Month 166 (9 deaths this month)
-// (% of dead firms that were N years old)
-Year 0: 100.0%
-
-[CURVES] Month 167, Production=553.66, Unempl%=6.64, realGDP=311.88, CPI=108.02, size0-9%=92.2
-// Firm Death Age Distribution - Month 167 (8 deaths this month)
-// (% of dead firms that were N years old)
-Year 0: 100.0%
-
-[CURVES] Month 168, Production=569.93, Unempl%=4.31, realGDP=308.61, CPI=107.99, size0-9%=90.7
-// Firm Death Age Distribution - Month 168 (8 deaths this month)
-// (% of dead firms that were N years old)
-Year 0: 100.0%
-
-[CURVES] Month 169, Production=558.75, Unempl%=3.13, realGDP=307.63, CPI=108.14, size0-9%=90.7
-// Firm Death Age Distribution - Month 169 (9 deaths this month)
-// (% of dead firms that were N years old)
-Year 0: 100.0%
-
-[CURVES] Month 170, Production=575.37, Unempl%=2.04, realGDP=322.07, CPI=108.23, size0-9%=90.6
-// Firm Death Age Distribution - Month 170 (8 deaths this month)
-// (% of dead firms that were N years old)
-Year 0: 100.0%
-
-[CURVES] Month 171, Production=560.79, Unempl%=5.18, realGDP=311.65, CPI=108.34, size0-9%=91.1
-// Firm Death Age Distribution - Month 171 (9 deaths this month)
-// (% of dead firms that were N years old)
-Year 0: 100.0%
-
-[CURVES] Month 172, Production=586.30, Unempl%=1.22, realGDP=316.55, CPI=108.44, size0-9%=91.4
-// Firm Death Age Distribution - Month 172 (8 deaths this month)
-// (% of dead firms that were N years old)
-Year 0: 100.0%
-
-[CURVES] Month 173, Production=582.61, Unempl%=2.20, realGDP=318.09, CPI=108.54, size0-9%=90.7
-// Firm Death Age Distribution - Month 173 (10 deaths this month)
-// (% of dead firms that were N years old)
-Year 0: 100.0%
-
-[CURVES] Month 174, Production=594.44, Unempl%=0.71, realGDP=322.59, CPI=108.67, size0-9%=90.4
-// Firm Death Age Distribution - Month 174 (2 deaths this month)
-// (% of dead firms that were N years old)
-Year 0: 100.0%
-
-[CURVES] Month 175, Production=579.99, Unempl%=5.49, realGDP=320.13, CPI=108.72, size0-9%=90.7
-// Firm Death Age Distribution - Month 175 (10 deaths this month)
-// (% of dead firms that were N years old)
-Year 0: 100.0%
-
-[CURVES] Month 176, Production=554.30, Unempl%=9.37, realGDP=317.30, CPI=108.81, size0-9%=91.8
-// Firm Death Age Distribution - Month 176 (7 deaths this month)
-// (% of dead firms that were N years old)
-Year 0: 100.0%
-
-[CURVES] Month 177, Production=568.82, Unempl%=5.06, realGDP=318.92, CPI=108.84, size0-9%=90.2
-// Firm Death Age Distribution - Month 177 (8 deaths this month)
-// (% of dead firms that were N years old)
-Year 0: 100.0%
-
-[CURVES] Month 178, Production=557.04, Unempl%=8.00, realGDP=322.16, CPI=108.89, size0-9%=90.9
-// Firm Death Age Distribution - Month 178 (4 deaths this month)
-// (% of dead firms that were N years old)
-Year 0: 100.0%
-
-[CURVES] Month 179, Production=586.05, Unempl%=2.61, realGDP=327.51, CPI=108.99, size0-9%=90.9
-// Firm Death Age Distribution - Month 179 (3 deaths this month)
-// (% of dead firms that were N years old)
-Year 0: 100.0%
-
-[CURVES] Month 180, Production=601.68, Unempl%=0.72, realGDP=327.46, CPI=109.06, size0-9%=90.4
-// Firm Death Age Distribution - Month 180 (12 deaths this month)
-// (% of dead firms that were N years old)
-Year 0: 100.0%
-
-[CURVES] Month 181, Production=608.53, Unempl%=0.56, realGDP=328.10, CPI=109.07, size0-9%=91.2
-// Firm Death Age Distribution - Month 181 (12 deaths this month)
-// (% of dead firms that were N years old)
-Year 0: 100.0%
-
-[CURVES] Month 182, Production=578.42, Unempl%=6.03, realGDP=324.52, CPI=109.08, size0-9%=91.1
-// Firm Death Age Distribution - Month 182 (7 deaths this month)
-// (% of dead firms that were N years old)
-Year 0: 100.0%
-
-[CURVES] Month 183, Production=599.53, Unempl%=1.72, realGDP=332.02, CPI=109.14, size0-9%=91.4
-// Firm Death Age Distribution - Month 183 (14 deaths this month)
-// (% of dead firms that were N years old)
-Year 0: 100.0%
-
-[CURVES] Month 184, Production=608.38, Unempl%=1.09, realGDP=334.04, CPI=109.28, size0-9%=91.7
-// Firm Death Age Distribution - Month 184 (12 deaths this month)
-// (% of dead firms that were N years old)
-Year 0: 100.0%
-
-[CURVES] Month 185, Production=600.40, Unempl%=4.27, realGDP=330.64, CPI=109.31, size0-9%=90.3
-// Firm Death Age Distribution - Month 185 (6 deaths this month)
-// (% of dead firms that were N years old)
-Year 0: 100.0%
-
-[CURVES] Month 186, Production=597.43, Unempl%=3.90, realGDP=335.52, CPI=109.42, size0-9%=90.9
-// Firm Death Age Distribution - Month 186 (11 deaths this month)
-// (% of dead firms that were N years old)
-Year 0: 90.9%
-Year 2: 9.1%
-
-[CURVES] Month 187, Production=610.05, Unempl%=0.92, realGDP=334.48, CPI=109.46, size0-9%=90.6
-// Firm Death Age Distribution - Month 187 (14 deaths this month)
-// (% of dead firms that were N years old)
-Year 0: 100.0%
-
-[CURVES] Month 188, Production=591.25, Unempl%=4.37, realGDP=332.90, CPI=109.55, size0-9%=89.8
-// Firm Death Age Distribution - Month 188 (5 deaths this month)
-// (% of dead firms that were N years old)
-Year 0: 100.0%
-
-[CURVES] Month 189, Production=606.86, Unempl%=0.52, realGDP=339.21, CPI=109.65, size0-9%=89.0
-// Firm Death Age Distribution - Month 189 (13 deaths this month)
-// (% of dead firms that were N years old)
-Year 0: 100.0%
-
-[CURVES] Month 190, Production=615.00, Unempl%=1.01, realGDP=333.21, CPI=109.78, size0-9%=90.0
-// Firm Death Age Distribution - Month 190 (8 deaths this month)
-// (% of dead firms that were N years old)
-Year 0: 100.0%
-
-[CURVES] Month 191, Production=612.90, Unempl%=2.14, realGDP=337.02, CPI=109.89, size0-9%=90.0
-// Firm Death Age Distribution - Month 191 (11 deaths this month)
-// (% of dead firms that were N years old)
-Year 0: 100.0%
-
-[CURVES] Month 192, Production=614.57, Unempl%=2.44, realGDP=339.72, CPI=110.06, size0-9%=90.9
-// Firm Death Age Distribution - Month 192 (12 deaths this month)
-// (% of dead firms that were N years old)
-Year 0: 100.0%
-
-[CURVES] Month 193, Production=606.03, Unempl%=2.13, realGDP=340.46, CPI=110.14, size0-9%=90.6
-// Firm Death Age Distribution - Month 193 (16 deaths this month)
-// (% of dead firms that were N years old)
-Year 0: 100.0%
-
-[CURVES] Month 194, Production=584.66, Unempl%=8.33, realGDP=340.09, CPI=110.23, size0-9%=91.9
-// Firm Death Age Distribution - Month 194 (8 deaths this month)
-// (% of dead firms that were N years old)
-Year 0: 100.0%
-
-[CURVES] Month 195, Production=581.46, Unempl%=5.54, realGDP=340.95, CPI=110.41, size0-9%=90.3
-// Firm Death Age Distribution - Month 195 (7 deaths this month)
-// (% of dead firms that were N years old)
-Year 0: 100.0%
-
-[CURVES] Month 196, Production=590.43, Unempl%=7.61, realGDP=340.27, CPI=110.58, size0-9%=90.6
-// Firm Death Age Distribution - Month 196 (4 deaths this month)
-// (% of dead firms that were N years old)
-Year 0: 100.0%
-
-[CURVES] Month 197, Production=631.94, Unempl%=1.27, realGDP=347.11, CPI=110.69, size0-9%=90.8
-// Firm Death Age Distribution - Month 197 (11 deaths this month)
-// (% of dead firms that were N years old)
-Year 0: 100.0%
-
-[CURVES] Month 198, Production=623.38, Unempl%=0.71, realGDP=340.79, CPI=110.80, size0-9%=89.8
-// Firm Death Age Distribution - Month 198 (13 deaths this month)
-// (% of dead firms that were N years old)
-Year 0: 100.0%
-
-[CURVES] Month 199, Production=637.10, Unempl%=1.67, realGDP=344.22, CPI=111.01, size0-9%=91.5
-// Firm Death Age Distribution - Month 199 (8 deaths this month)
-// (% of dead firms that were N years old)
-Year 0: 100.0%
-
-[CURVES] Month 200, Production=626.30, Unempl%=0.33, realGDP=347.63, CPI=111.25, size0-9%=90.5
-// Firm Death Age Distribution - Month 200 (11 deaths this month)
-// (% of dead firms that were N years old)
-Year 0: 100.0%
-
-[CURVES] Month 201, Production=634.87, Unempl%=1.96, realGDP=341.37, CPI=111.42, size0-9%=90.8
-// Firm Death Age Distribution - Month 201 (9 deaths this month)
-// (% of dead firms that were N years old)
-Year 0: 100.0%
-
-[CURVES] Month 202, Production=577.08, Unempl%=12.85, realGDP=344.00, CPI=111.59, size0-9%=90.8
-// Firm Death Age Distribution - Month 202 (9 deaths this month)
-// (% of dead firms that were N years old)
-Year 0: 100.0%
-
-[CURVES] Month 203, Production=591.19, Unempl%=8.06, realGDP=340.58, CPI=111.75, size0-9%=90.0
-// Firm Death Age Distribution - Month 203 (7 deaths this month)
-// (% of dead firms that were N years old)
-Year 0: 100.0%
-
-[CURVES] Month 204, Production=634.20, Unempl%=2.22, realGDP=356.11, CPI=111.80, size0-9%=91.2
-// Firm Death Age Distribution - Month 204 (10 deaths this month)
-// (% of dead firms that were N years old)
-Year 0: 100.0%
-
-[CURVES] Month 205, Production=623.48, Unempl%=5.70, realGDP=351.16, CPI=112.07, size0-9%=90.1
-// Firm Death Age Distribution - Month 205 (12 deaths this month)
-// (% of dead firms that were N years old)
-Year 0: 100.0%
-
-[CURVES] Month 206, Production=645.63, Unempl%=1.54, realGDP=351.58, CPI=112.07, size0-9%=89.4
-// Firm Death Age Distribution - Month 206 (14 deaths this month)
-// (% of dead firms that were N years old)
-Year 0: 100.0%
-
-[CURVES] Month 207, Production=636.98, Unempl%=2.67, realGDP=354.97, CPI=112.04, size0-9%=90.6
-// Firm Death Age Distribution - Month 207 (15 deaths this month)
-// (% of dead firms that were N years old)
-Year 0: 100.0%
-
-[CURVES] Month 208, Production=637.91, Unempl%=3.18, realGDP=354.48, CPI=112.26, size0-9%=90.7
-// Firm Death Age Distribution - Month 208 (6 deaths this month)
-// (% of dead firms that were N years old)
-Year 0: 100.0%
-
-[CURVES] Month 209, Production=604.93, Unempl%=9.02, realGDP=352.45, CPI=112.43, size0-9%=90.4
-// Firm Death Age Distribution - Month 209 (8 deaths this month)
-// (% of dead firms that were N years old)
-Year 0: 100.0%
-
-[CURVES] Month 210, Production=629.96, Unempl%=4.04, realGDP=357.33, CPI=112.51, size0-9%=90.5
-// Firm Death Age Distribution - Month 210 (13 deaths this month)
-// (% of dead firms that were N years old)
-Year 0: 92.3%
-Year 3: 7.7%
-
-[CURVES] Month 211, Production=629.49, Unempl%=5.71, realGDP=349.80, CPI=112.79, size0-9%=90.7
-// Firm Death Age Distribution - Month 211 (9 deaths this month)
-// (% of dead firms that were N years old)
-Year 0: 100.0%
-
-[CURVES] Month 212, Production=610.73, Unempl%=8.63, realGDP=352.81, CPI=113.02, size0-9%=91.1
-// Firm Death Age Distribution - Month 212 (6 deaths this month)
-// (% of dead firms that were N years old)
-Year 0: 100.0%
-
-[CURVES] Month 213, Production=614.68, Unempl%=5.91, realGDP=352.94, CPI=113.08, size0-9%=90.2
-// Firm Death Age Distribution - Month 213 (7 deaths this month)
-// (% of dead firms that were N years old)
-Year 0: 100.0%
-
-[CURVES] Month 214, Production=554.13, Unempl%=13.75, realGDP=353.16, CPI=113.24, size0-9%=92.7
-// Firm Death Age Distribution - Month 214 (7 deaths this month)
-// (% of dead firms that were N years old)
-Year 0: 100.0%
-
-[CURVES] Month 215, Production=592.47, Unempl%=8.88, realGDP=350.32, CPI=113.28, size0-9%=90.7
-// Firm Death Age Distribution - Month 215 (5 deaths this month)
-// (% of dead firms that were N years old)
-Year 0: 100.0%

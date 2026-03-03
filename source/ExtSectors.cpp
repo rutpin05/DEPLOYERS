@@ -135,11 +135,22 @@ void CExtSect::monthInitialize()
 	GoodType GFCFtype = getSAM().GFCFtype();
 
 	bool _IsDisaggExtCountry = false;
-	string extCountryCode = name().substr(1, 2);
-	if (getWorld().getpFigaro() != nullptr
-		&& getWorld().getFigaro()._pDisaggExtSectCountries->find(extCountryCode)
-		!= getWorld().getFigaro()._pDisaggExtSectCountries->end())
-		_IsDisaggExtCountry = true;
+	bool _IsSectorMode = (getInputParameter("TradeDisaggMode") == 1);
+	if (!_IsSectorMode)
+	{
+		// extract the two-letter country code if present
+		string extCountryCode = "";
+		string nm = name();
+		if (nm.size() >= 3 && nm[0] == 'X' && nm[1] == '_')
+			extCountryCode = nm.substr(2, 2);
+		else if (nm.size() >= 2)
+			extCountryCode = nm.substr(0, 2);
+
+		if (getWorld().getpFigaro() != nullptr
+			&& getWorld().getpFigaro()->_pDisaggExtSectCountries->find(extCountryCode)
+			!= getWorld().getpFigaro()->_pDisaggExtSectCountries->end())
+			_IsDisaggExtCountry = true;
+	}
 
 	// 1. EXPORTS to this ExtSect interface  --------------------------------------------------
 
@@ -160,9 +171,9 @@ void CExtSect::monthInitialize()
 		Exports().at(gType) = getSAM().getRowCol(gType, getAgentType());
 		Exports_Init().at(gType) = getSAM().getRowCol(gType, getAgentType());
 
-		// Smooth inter country changes
+		// Smooth inter country changes (not applicable in Sector mode or for RW)
 
-		if (getWorld().getpFigaro() != nullptr && name() != "RW")
+		if (!_IsSectorMode && getWorld().getpFigaro() != nullptr && name() != "RW")
 			Exports_Init().at(gType) = getprevExports(gType)
 			+ ceil((getExports_Init().at(gType) - getprevExports(gType)) * getInputParameter("ExportFraction"));
 
@@ -180,7 +191,7 @@ void CExtSect::monthInitialize()
 		if (gType == getSAM().GFCFtype())
 			continue; // this gType fraction of the GFCF qtty already included in its buyQtty
 
-		if (getWorld().getpFigaro() == nullptr
+		if (_IsSectorMode || getWorld().getpFigaro() == nullptr
 			|| name() == "RW") // Use SAM values
 		{
 			buyQtty = getSAM().getRowCol(gType, getAgentType()); // per year
@@ -219,7 +230,7 @@ void CExtSect::monthInitialize()
 
 	ToSell(getAgentType()) = 0;
 
-	if (getWorld().getpFigaro() == nullptr || name() == "RW") // Use SAM values
+	if (_IsSectorMode || getWorld().getpFigaro() == nullptr || name() == "RW") // Use SAM values
 	{
 		for (long gType = 0; gType < getSAM().getnPProducerTypes(); ++gType)
 			ToSell(getAgentType()) += getSAM().getRowCol(getAgentType(), gType);
@@ -267,25 +278,20 @@ void CExtSect::monthInitialize()
 
 	// In CExtSect::monthActivity(), protect RW's import values:
 
-	if (name() != "RW")  // Only clear for simulated external countries
+	if (!_IsSectorMode && name() != "RW")  // Only clear for simulated external countries (not in Sector mode)
 	{
 		Imports().clear();
 		Imports().resize(getSAM().getnPProducerTypes() + 1, 0);
 	}
 
-	// In CExtSect::monthInitialize(), after Imports().resize():
-
-	if (name() == "RW")
+	if (_IsSectorMode || name() == "RW")
 	{
-		// For RW, use SAM values for imports since RW is not simulated
+		// Use SAM values for imports (not simulated)
 		for (long gType = 0; gType < getSAM().getnPProducerTypes(); ++gType)
 		{
-			// RW imports from domestic sectors = domestic sectors' exports to RW
-			// This is the column in SAM for RW (what each sector exports to RW)
 			Imports()[gType] = getSAM().getRowCol(gType, getAgentType());
 		}
 
-		// Also handle GFCF component if needed
 		GoodType GFCFtype = getSAM().GFCFtype();
 		if (GFCFtype < getSAM().getnPProducerTypes())
 		{

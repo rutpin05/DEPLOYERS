@@ -3178,46 +3178,73 @@ void CWorld::writeExternalSectorsIO()
 
 	outf << "IMPORTS {" << endl;
 
-	// -------  Disaggregated extCountries  -------------------------------
+	string thisCountryCode = (_pFIGARO != nullptr ? Figaro()._thisCountryCode : "");
 
-	for (const auto& extCountryCode : *Figaro()._pDisaggExtSectCountries)
+	// loop over every external sector and dump its import flows
+	// grouping by country code is not necessary when we simply want each sector visible
+	// we'll still keep the previous structure when Figaro lists are available
+
+	// first handle sectors that appear in the disaggregated list (preserves old behaviour)
+	if (_pFIGARO != nullptr)
 	{
-		outf << "PurchasedFromCountryCode " << extCountryCode << " { " << endl;
+		for (const auto& extCountryCode : *Figaro()._pDisaggExtSectCountries)
+		{
+			outf << "PurchasedFromCountryCode " << extCountryCode << " { " << endl;
+			for (const auto& eS : ExtSectors())
+			{
+				auto& eSectRowN = eS.first;
+				auto& eSect = *eS.second;
+				string eSectCountryCode = eSect.name().substr(0, 2);
+				if (eSectCountryCode != extCountryCode)
+					continue;
+
+				string sectorCode = (eSect.name().size() > 2 ? eSect.name().substr(2) : eSect.name());
+				outf << " from_ExtSector " << eSectRowN << " " << eSect.name()
+					<< " SectorCode " << sectorCode << " { to_mySectors ";
+				for (long producerCol = 0; producerCol < getSAM().getnPProducerTypes(); ++producerCol)
+					outf << " " << producerCol << " " << eSect.getImports()[producerCol];
+
+				outf << " }" << endl; // SectorCode
+			}
+
+			outf << " }" << endl; // FromDisaggCountryCode
+		}
+
+		outf << endl;
+
+		// aggregated countries (including RW)
+		for (const auto& extCountryCode : *Figaro()._pAggExtSectCountries)
+		{
+			outf << "PurchasedFromCountryCode " << extCountryCode << " { " << endl;
+			string eSectName = extCountryCode;
+			GoodType eSectRowN = getSAM().getAccNofName(eSectName);
+
+			outf << " from_aggExtSector " << eSectRowN << " " << eSectName << " { to_mySectors ";
+			for (long producerCol = 0; producerCol < getSAM().getnPProducerTypes(); ++producerCol)
+				outf << " " << producerCol << " " << getExtSect(eSectRowN).getImports()[producerCol];
+
+			outf << " }" << endl;
+
+			outf << " }" << endl;
+		}
+
+	}
+	else
+	{
+		// no Figaro available – just dump every ext sector under a generic RW block
+		outf << "PurchasedFromCountryCode RW { " << endl;
 		for (const auto& eS : ExtSectors())
 		{
 			auto& eSectRowN = eS.first;
 			auto& eSect = *eS.second;
-			string eSectCountryCode = eSect.name().substr(0, 2);
-			if (eSectCountryCode != extCountryCode)
-				continue;
-
+			string sectorCode = (eSect.name().size() > 2 ? eSect.name().substr(2) : eSect.name());
 			outf << " from_ExtSector " << eSectRowN << " " << eSect.name()
-				<< " SectorCode " << eSect.name().substr(3) << " { to_mySectors ";
+				<< " SectorCode " << sectorCode << " { to_mySectors ";
 			for (long producerCol = 0; producerCol < getSAM().getnPProducerTypes(); ++producerCol)
 				outf << " " << producerCol << " " << eSect.getImports()[producerCol];
 
-			outf << " }" << endl; // SectorCode
+			outf << " }" << endl;
 		}
-
-		outf << " }" << endl; // FromDisaggCountryCode
-	}
-
-	outf << endl;
-
-	// -------  Aggregated extCountries  -------------------------------
-
-	for (const auto& extCountryCode : *Figaro()._pAggExtSectCountries)
-	{
-		outf << "PurchasedFromCountryCode " << extCountryCode << " { " << endl;
-		string eSectName = extCountryCode;
-		GoodType eSectRowN = getSAM().getAccNofName(eSectName);
-
-		outf << " from_aggExtSector " << eSectRowN << " " << eSectName << " { to_mySectors ";
-		for (long producerCol = 0; producerCol < getSAM().getnPProducerTypes(); ++producerCol)
-			outf << " " << producerCol << " " << getExtSect(eSectRowN).getImports()[producerCol];
-
-		outf << " }" << endl;
-
 		outf << " }" << endl;
 	}
 
@@ -3227,30 +3254,57 @@ void CWorld::writeExternalSectorsIO()
 
 	outf << "EXPORTS {" << endl;
 
-	// -------  Disaggregated to my DisaggExtSectCountries  -------------------------------
+	// -------  EXports section: each external sector writes its exports back to this country
 
-	for (const auto& extCountryCode : *Figaro()._pDisaggExtSectCountries)
+	if (_pFIGARO != nullptr)
 	{
-		GoodType baseExtSectN = getSAM().getAccNofName(extCountryCode) - 1;
-		outf << "SoldToCountryCode " << extCountryCode << " { " << endl;
-		for (long producerRowN = 0; producerRowN < getSAM().getnPProducerTypes(); ++producerRowN)
+		for (const auto& extCountryCode : *Figaro()._pDisaggExtSectCountries)
 		{
-			outf << " to_extSector " << producerRowN << " " << getSAM().getAccNameOfN(producerRowN)
-				<< " { from_mySectors ";
-
-			for (const auto& es : ExtSectors())
+			GoodType baseExtSectN = getSAM().getAccNofName(extCountryCode) - 1;
+			outf << "SoldToCountryCode " << extCountryCode << " { " << endl;
+			for (long producerRowN = 0; producerRowN < getSAM().getnPProducerTypes(); ++producerRowN)
 			{
-				auto& eSectColN = es.first;
-				auto& eSect = *es.second;
-				if (eSect.name().substr(0, 2) != extCountryCode)
-					continue;
+				outf << " to_extSector " << producerRowN << " " << getSAM().getAccNameOfN(producerRowN)
+					<< " { from_mySectors ";
 
-				outf << " " << eSectColN << " " << eSect.getExports().at(producerRowN);
+				for (const auto& es : ExtSectors())
+				{
+					auto& eSectColN = es.first;
+					auto& eSect = *es.second;
+					if (eSect.name().substr(0, 2) != extCountryCode)
+						continue;
+
+					outf << " " << eSectColN << " " << eSect.getExports().at(producerRowN);
+				}
+
+				outf << " }" << endl;
 			}
-
 			outf << " }" << endl;
 		}
-		outf << " }" << endl;
+	}
+	else
+	{
+		// no Figaro – just write every ext sector as its own sell-to block under RW
+		for (const auto& es : ExtSectors())
+		{
+			auto& eSect = *es.second;
+			string groupCode = "RW";
+			outf << "SoldToCountryCode " << groupCode << " { " << endl;
+			for (long producerRowN = 0; producerRowN < getSAM().getnPProducerTypes(); ++producerRowN)
+			{
+				outf << " to_extSector " << producerRowN << " " << getSAM().getAccNameOfN(producerRowN)
+					<< " { from_mySectors ";
+
+				for (const auto& inner : ExtSectors())
+				{
+					if (inner.first != es.first) continue;
+					outf << " " << inner.first << " " << inner.second->getExports().at(producerRowN);
+				}
+
+				outf << " }" << endl;
+			}
+			outf << " }" << endl;
+		}
 	}
 
 	outf << endl;
@@ -3366,6 +3420,9 @@ void CWorld::waitMyExternalCountriesToReadMyIO() const
 
 void CWorld::readMyExternalSectorsIO() const
 {
+	if (getInputParameter("TradeDisaggMode") == 1) // Sector mode: no inter-country IO files
+		return;
+
 	if (_pFIGARO == nullptr || getExtSectors().size() <= 1 // size==1: RW
 		|| currMonth() < getInputParameter("ReadIOfilesFromMonth"))
 		return;
@@ -3570,6 +3627,183 @@ void CWorld::readMyExternalSectorsIO() const
 		*/
 	}
 };
+
+// new version with more robust parsing of IO files (handles disaggregated external sectors)
+void CWorld::readMyExternalSectorsIO_v2() const
+{
+    if (getInputParameter("TradeDisaggMode") == 1)
+        return;
+
+    if (_pFIGARO == nullptr || getExtSectors().size() <= 1
+        || currMonth() < getInputParameter("ReadIOfilesFromMonth"))
+        return;
+
+    waitMyExternalCountriesToWriteTheirIO();
+
+    long abscurrMonth = 0;
+    string fname, countryCode, SectorCode, SectName, ExtSectName, word, word1, word2;
+    GoodQtty SectorN = -1, qtty = 0;
+    double d0 = 0., d1 = 0.;
+    GoodType gType = undefinedGoodType;
+    char line[1000] = { " " };
+
+    ifstream ExtSectIO;
+    string thisCountryCode = Figaro()._thisCountryCode;
+
+    set<string> MyExtCountriesCodes;
+    for (const auto& code : *getFigaro()._pDisaggExtSectCountries)
+        MyExtCountriesCodes.insert(code);
+    for (const auto& code : *getFigaro()._pAggExtSectCountries)
+        MyExtCountriesCodes.insert(code);
+    MyExtCountriesCodes.erase("RW");
+    set<string> extCountriesCodes = MyExtCountriesCodes;
+
+    for (auto& pair : ExtSectors())
+    {
+        auto& ExtSect = *pair.second;
+        ExtSect.Exports().assign(getSAM().getnPXproducerTypes(), 0);
+        ExtSect.Exports_Init().assign(getSAM().getnPXproducerTypes(), 0);
+        ExtSect.Imports().assign(getSAM().getnPXproducerTypes(), 0);
+    }
+
+    for (const auto& extCountryCode : MyExtCountriesCodes)
+    {
+        string filename = CWorld::getSimulationName() + "_" + extCountryCode + "_IO.dep";
+        ExtSectIO.open(filename);
+        if (!ExtSectIO.is_open())
+            ERRORmsg("Couldn't open " + filename, true);
+
+#ifdef WINDOWS_VERSION
+        ExtSectIO.getline(line, 999, '\n');
+#endif
+        ExtSectIO >> word >> countryCode >> word;
+        assert(countryCode == extCountryCode);
+        ExtSectIO >> abscurrMonth;
+
+        // IMPORTS section
+        ExtSectIO >> word >> word1; // should be "IMPORTS {"
+        while (true)
+        {
+            while (word != "PurchasedFromCountryCode")
+            {
+                ExtSectIO >> word;
+                if (word != "PurchasedFromCountryCode")
+                    ExtSectIO.getline(line, 999, '\n');
+            }
+            ExtSectIO >> countryCode;
+            if (countryCode == thisCountryCode)
+            {
+                ExtSectIO >> word;
+                break;
+            }
+            else
+                word = "";
+        }
+        while (ExtSectIO >> word && word != "}")
+        {
+            if (word == "from_ExtSector" || word == "from_aggExtSector")
+            {
+                ExtSectIO >> extSectorN >> ExtSectName;
+                ExtSectIO >> word;
+                if (word == "SectorCode")
+                {
+                    ExtSectIO >> SectorCode;
+                    ExtSectIO >> word;
+                }
+                if (word != "{")
+                {
+                    while (word != "{" && ExtSectIO >> word);
+                }
+                ExtSectIO >> word; // to_mySectors
+                GoodType myExtSectorN = getSAM().getAccNofName(ExtSectName);
+                while (ExtSectIO >> word && word != "}")
+                {
+                    SectorN = atoi(word.c_str());
+                    ExtSectIO >> qtty;
+                    ExtSectors().at(myExtSectorN)->Exports()[SectorN] = qtty;
+                    ExtSectors().at(myExtSectorN)->Exports_Init()[SectorN] = qtty;
+                }
+            }
+            else
+            {
+                ExtSectIO.getline(line, 999, '\n');
+            }
+        }
+
+        // EXPORTS section
+        while (true)
+        {
+            while (word != "SoldToCountryCode")
+            {
+                ExtSectIO >> word;
+                if (word != "SoldToCountryCode")
+                    ExtSectIO.getline(line, 999, '\n');
+            }
+            ExtSectIO >> countryCode;
+            if (countryCode == thisCountryCode)
+            {
+                ExtSectIO >> word;
+                break;
+            }
+            else
+                word = "";
+        }
+        while (ExtSectIO >> word && word != "}")
+        {
+            if (word == "to_extSector" || word == "to_aggExtSector")
+            {
+                ExtSectIO >> extSectorN >> ExtSectName;
+                ExtSectIO >> word;
+                if (word != "{")
+                {
+                    while (word != "{" && ExtSectIO >> word);
+                }
+                ExtSectIO >> word; // from_mySectors
+                GoodType myExtSectorN = getSAM().getAccNofName(ExtSectName);
+                while (ExtSectIO >> word && word != "}")
+                {
+                    SectorN = atoi(word.c_str());
+                    ExtSectIO >> qtty;
+                    ExtSectors().at(myExtSectorN)->Imports()[SectorN] = qtty;
+                }
+            }
+            else
+            {
+                ExtSectIO.getline(line, 999, '\n');
+            }
+        }
+        ExtSectIO.close();
+
+        filename = CWorld::getSimulationName() + "_" + extCountryCode + "_IO_readBy_" + thisCountryCode + ".dep";
+        ofstream flagFile(filename);
+        flagFile << " " << abscurrMonth;
+        flagFile.flush();
+        flagFile.close();
+    }
+
+    // handle RW as before
+    if (getExtSectors().find(getSAM().getAccNofName("RW")) != getExtSectors().end())
+    {
+        GoodType RWType = getSAM().getAccNofName("RW");
+        CExtSect* pRWExtSect = pExtSect(RWType);
+        for (long gType = 0; gType < getSAM().getnPProducerTypes(); ++gType)
+        {
+            GoodQtty importFromRW = getSAM().getRowCol(gType, RWType);
+            pRWExtSect->Exports()[gType] = importFromRW;
+            pRWExtSect->Exports_Init()[gType] = importFromRW;
+        }
+        GoodType GFCFtype = getSAM().GFCFtype();
+        /*
+        if (GFCFtype <= getSAM().getnPXproducerTypes())
+        {
+            GoodQtty gfcfFromRW = getSAM().getRowCol(GFCFtype, RWType);
+            pRWExtSect->Exports()[GFCFtype] = gfcfFromRW;
+            pRWExtSect->Exports_Init()[GFCFtype] = gfcfFromRW;
+        }
+        */
+    }
+};
+
 void CWorld::waitMyExternalCountriesToWriteTheirIO() const
 {
 	string thisCountryCode = getFigaro()._thisCountryCode;
@@ -4491,10 +4725,13 @@ void CWorld::runOneMonth()
 			100.0 * getDEPData().getnFirmsPerFirmsize().at("0-9") / totalFirms : 0.0;
 		
 		// Labeled output for readability
-		LogFile() << "\n[CURVES] Month " << std::setw(3) << currMonth() 
+		double cpiValue = getDEPData().getCPItracker().getCPI().size() > 0
+			? getDEPData().getCPItracker().getCPI().back() : 100.0;
+		LogFile() << "\n[CURVES] Month " << std::setw(3) << currMonth()
 			<< ", Production=" << std::fixed << std::setprecision(2) << (getDEPData().getTotalProduction() * 1.e-9)
 			<< ", Unempl%=" << std::setprecision(2) << (getDEPData().getUnemployment() * 100)
 			<< ", realGDP=" << std::setprecision(2) << (getDEPData().getGDPtracker().getreal_gdp() * 1.e-9)
+			<< ", CPI=" << std::setprecision(2) << cpiValue
 			<< ", size0-9%=" << std::setprecision(1) << firms0to9Pct;
 		LogFile().flush();
 	}
@@ -4502,8 +4739,8 @@ void CWorld::runOneMonth()
 	// Modified condition to handle reloads properly
 	if (currMonth() > InitMonth() + 1)
 	{
-		// Normal operation: read external sectors I/O
-		readMyExternalSectorsIO();
+		// Normal operation: read external sectors I/O (use v2 parser)
+		readMyExternalSectorsIO_v2();
 	}
 	else if (getInputParameter("LoadMonthN") > 0 && currMonth() == InitMonth() + 1)
 	{

@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git *)",
+      "Bash(powershell *)",
+      "Bash(ls *)",
+      "Bash(find *)",
+      "Bash(cd *)",
+      "Bash(\"/c/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/MSBuild.exe\" *)",
+      "Bash(Start-Process *)",
+      "Bash(Get-Content *)",
+      "Bash(remove-item *)"
+    ]
+  }
+}
