@@ -3178,15 +3178,31 @@ void CWorld::writeExternalSectorsIO()
 
 	outf << "IMPORTS {" << endl;
 
-	string thisCountryCode = (_pFIGARO != nullptr ? Figaro()._thisCountryCode : "");
+	string thisCC = (_pFIGARO != nullptr ? Figaro()._thisCountryCode : "");
 
 	// loop over every external sector and dump its import flows
 	// grouping by country code is not necessary when we simply want each sector visible
 	// we'll still keep the previous structure when Figaro lists are available
 
-	// first handle sectors that appear in the disaggregated list (preserves old behaviour)
-	if (_pFIGARO != nullptr)
+	if (_pFIGARO != nullptr && getInputParameter("TradeDisaggMode") == 1)
 	{
+		// Sector mode: iterate over all ExtSectors by sector name (no country grouping)
+		outf << "PurchasedFromCountryCode RW { " << endl;
+		for (const auto& eS : ExtSectors())
+		{
+			auto& eSectRowN = eS.first;
+			auto& eSect = *eS.second;
+			outf << " from_ExtSector " << eSectRowN << " " << eSect.name()
+				<< " SectorCode " << eSect.name() << " { to_mySectors ";
+			for (long producerCol = 0; producerCol < getSAM().getnPProducerTypes(); ++producerCol)
+				outf << " " << producerCol << " " << eSect.getImports()[producerCol];
+			outf << " }" << endl;
+		}
+		outf << " }" << endl;
+	}
+	else if (_pFIGARO != nullptr)
+	{
+		// Country mode: first disaggregated, then aggregated countries
 		for (const auto& extCountryCode : *Figaro()._pDisaggExtSectCountries)
 		{
 			outf << "PurchasedFromCountryCode " << extCountryCode << " { " << endl;
@@ -3204,10 +3220,10 @@ void CWorld::writeExternalSectorsIO()
 				for (long producerCol = 0; producerCol < getSAM().getnPProducerTypes(); ++producerCol)
 					outf << " " << producerCol << " " << eSect.getImports()[producerCol];
 
-				outf << " }" << endl; // SectorCode
+				outf << " }" << endl;
 			}
 
-			outf << " }" << endl; // FromDisaggCountryCode
+			outf << " }" << endl;
 		}
 
 		outf << endl;
@@ -3227,7 +3243,6 @@ void CWorld::writeExternalSectorsIO()
 
 			outf << " }" << endl;
 		}
-
 	}
 	else
 	{
@@ -3256,8 +3271,23 @@ void CWorld::writeExternalSectorsIO()
 
 	// -------  EXports section: each external sector writes its exports back to this country
 
-	if (_pFIGARO != nullptr)
+	if (_pFIGARO != nullptr && getInputParameter("TradeDisaggMode") == 1)
 	{
+		// Sector mode: iterate over all ExtSectors by sector name
+		outf << "SoldToCountryCode RW { " << endl;
+		for (long producerRowN = 0; producerRowN < getSAM().getnPProducerTypes(); ++producerRowN)
+		{
+			outf << " to_extSector " << producerRowN << " " << getSAM().getAccNameOfN(producerRowN)
+				<< " { from_mySectors ";
+			for (const auto& es : ExtSectors())
+				outf << " " << es.first << " " << es.second->getExports().at(producerRowN);
+			outf << " }" << endl;
+		}
+		outf << " }" << endl;
+	}
+	else if (_pFIGARO != nullptr)
+	{
+		// Country mode: disaggregated countries
 		for (const auto& extCountryCode : *Figaro()._pDisaggExtSectCountries)
 		{
 			GoodType baseExtSectN = getSAM().getAccNofName(extCountryCode) - 1;
@@ -3279,6 +3309,24 @@ void CWorld::writeExternalSectorsIO()
 
 				outf << " }" << endl;
 			}
+			outf << " }" << endl;
+		}
+
+		outf << endl;
+
+		// Aggregated countries (including RW)
+		for (const auto& extCountryCode : *Figaro()._pAggExtSectCountries)
+		{
+			GoodType ExtSectorN = getSAM().getAccNofName(extCountryCode);
+
+			outf << "SoldToCountryCode " << extCountryCode << " { " << endl;
+			outf << " to_aggExtSector " << ExtSectorN << " " << extCountryCode << " { from_mySectors ";
+
+			for (long productRow = 0; productRow < getSAM().getnPProducerTypes(); ++productRow)
+				outf << " " << productRow << " " << getExtSectors().at(ExtSectorN)->getExports().at(productRow);
+
+			outf << " }" << endl;
+
 			outf << " }" << endl;
 		}
 	}
@@ -3305,25 +3353,6 @@ void CWorld::writeExternalSectorsIO()
 			}
 			outf << " }" << endl;
 		}
-	}
-
-	outf << endl;
-
-	// -------  Aggregated to my AggExtSectCountries  -------------------------------
-
-	for (const auto& extCountryCode : *Figaro()._pAggExtSectCountries)
-	{
-		GoodType ExtSectorN = getSAM().getAccNofName(extCountryCode);
-
-		outf << "SoldToCountryCode " << extCountryCode << " { " << endl;
-		outf << " to_aggExtSector " << ExtSectorN << " " << extCountryCode << " { from_mySectors ";
-
-		for (long productRow = 0; productRow < getSAM().getnPProducerTypes(); ++productRow)
-			outf << " " << productRow << " " << getExtSectors().at(ExtSectorN)->getExports().at(productRow);
-
-		outf << " }" << endl;
-
-		outf << " }" << endl;
 	}
 
 	outf << "}" << endl;
@@ -3643,12 +3672,13 @@ void CWorld::readMyExternalSectorsIO_v2() const
     long abscurrMonth = 0;
     string fname, countryCode, SectorCode, SectName, ExtSectName, word, word1, word2;
     GoodQtty SectorN = -1, qtty = 0;
+    GoodType extSectorN = 0;
     double d0 = 0., d1 = 0.;
     GoodType gType = undefinedGoodType;
     char line[1000] = { " " };
 
     ifstream ExtSectIO;
-    string thisCountryCode = Figaro()._thisCountryCode;
+    string thisCountryCode = getFigaro()._thisCountryCode;
 
     set<string> MyExtCountriesCodes;
     for (const auto& code : *getFigaro()._pDisaggExtSectCountries)

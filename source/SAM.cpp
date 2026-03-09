@@ -1810,7 +1810,7 @@ int CSAM::buildSectorExtSectorAccounts(const CFigaro& FIGARO, int SAMaccRowN)
 		auto& account = *Accounts()[SAMaccRowN];
 		account._accN = SAMaccRowN;
 
-		string sectorCode = FIGARO._pSectorTypeToCode->at(sectorN);
+		string sectorCode = FIGARO._pSectorTypeToCode->at(sectorN + 1); // +1 to skip "RW" pseudo-sector at index 0
 		account._label = "X_" + sectorCode;
 		account._accName = sectorCode;
 
@@ -1899,7 +1899,7 @@ int CSAM::buildSectorExtSectorAccounts(const CFigaro& FIGARO, int SAMaccRowN)
 	// Now populate final demand imports by sector
 	for (int sectorN = 0; sectorN < FIGARO.getNsectors(); ++sectorN)
 	{
-		string sectorCode = FIGARO._pSectorTypeToCode->at(sectorN);
+		string sectorCode = FIGARO._pSectorTypeToCode->at(sectorN + 1); // +1 to skip "RW" pseudo-sector at index 0
 		string xLabel = "X_" + sectorCode;
 
 		for (int foreignCountryN = 0; foreignCountryN < getWorld().getFigaro().getNcountries(); ++foreignCountryN)
